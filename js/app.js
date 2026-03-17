@@ -496,9 +496,9 @@ function onLocationUpdate(position) {
 
   setLocateBtnState('active');
 
-  // Pan to location only on the first fix
+  // Zoom in to location on the first fix; just pan on subsequent updates
   if (isFirstFix) {
-    map.panTo(latlng, { animate: true, duration: 0.5 });
+    map.setView(latlng, 13, { animate: true, duration: 0.8 });
   }
 }
 
