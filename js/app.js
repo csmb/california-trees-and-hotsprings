@@ -506,7 +506,7 @@ function onLocationUpdate(position) {
 
   // Zoom in to location on the first fix; just pan on subsequent updates
   if (isFirstFix) {
-    map.setView(latlng, 13, { animate: true, duration: 0.8 });
+    map.flyTo(latlng, 13);
   }
 }
 
