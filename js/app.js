@@ -437,17 +437,25 @@ function toggleLocate() {
   }
 }
 
-function startLocating() {
+function startLocating(highAccuracy = true) {
   if (!navigator.geolocation) {
-    setLocateBtnState('error');
-    setTimeout(() => setLocateBtnState('idle'), 3000);
+    showLocateError('Geolocation is not supported by this browser.');
     return;
   }
   setLocateBtnState('loading');
   state.locationWatchId = navigator.geolocation.watchPosition(
     onLocationUpdate,
-    onLocationError,
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
+    (err) => {
+      // Safari often times out with high accuracy; retry without it once
+      if (highAccuracy && (err.code === err.TIMEOUT || err.code === err.POSITION_UNAVAILABLE)) {
+        navigator.geolocation.clearWatch(state.locationWatchId);
+        state.locationWatchId = null;
+        startLocating(false);
+      } else {
+        onLocationError(err);
+      }
+    },
+    { enableHighAccuracy: highAccuracy, timeout: 20000, maximumAge: 10000 }
   );
 }
 
@@ -506,6 +514,31 @@ function onLocationError(err) {
   stopLocating();
   setLocateBtnState('error');
   setTimeout(() => setLocateBtnState('idle'), 3000);
+  if (err.code === err.PERMISSION_DENIED) {
+    showLocateError('Location access denied. Enable it in Settings > Safari > Location.');
+  } else if (err.code === err.TIMEOUT) {
+    showLocateError('Location timed out. Try again.');
+  } else {
+    showLocateError('Could not get your location.');
+  }
+}
+
+function showLocateError(message) {
+  const btn = document.getElementById('locate-btn');
+  let tip = document.getElementById('locate-tip');
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.id = 'locate-tip';
+    document.body.appendChild(tip);
+  }
+  tip.textContent = message;
+  tip.classList.add('is-visible');
+  // Position above the button
+  const rect = btn.getBoundingClientRect();
+  tip.style.right = (window.innerWidth - rect.right) + 'px';
+  tip.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+  clearTimeout(tip._hideTimer);
+  tip._hideTimer = setTimeout(() => tip.classList.remove('is-visible'), 5000);
 }
 
 function setLocateBtnState(s) {

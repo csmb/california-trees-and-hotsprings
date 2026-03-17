@@ -389,6 +389,29 @@ html, body {
   to { transform: rotate(360deg); }
 }
 
+/* Locate error tooltip */
+#locate-tip {
+  position: fixed;
+  background: rgba(30, 30, 30, 0.88);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 7px 11px;
+  border-radius: 8px;
+  max-width: 200px;
+  text-align: right;
+  pointer-events: none;
+  z-index: 1001;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+#locate-tip.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* User location dot */
 .user-location-dot {
   width: 16px;
