@@ -14,6 +14,10 @@ const state = {
   markers: new Map(),     // id → { marker: L.Marker, el: HTMLElement }
   activeFilter: 'all',
   activeLocationId: null,
+  searchQuery: '',
+  locationMarker: null,   // L.Marker for user's position dot
+  accuracyCircle: null,   // L.Circle showing GPS accuracy radius
+  locationWatchId: null,  // geolocation watchPosition handle
 };
 
 // ---------------------------------------------------------------------------
@@ -70,15 +74,12 @@ function hotspringSvg(active) {
       <!-- pin body -->
       <path d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 26 18 26S36 31.5 36 18C36 8.06 27.94 0 18 0z"
             fill="${fill}" stroke="white" stroke-width="1.5"/>
-      <!-- steam waves (3 wavy lines) -->
-      <path d="M12 9 Q13.5 7 15 9 Q16.5 11 18 9" stroke="white" stroke-width="1.8" fill="none"
-            stroke-linecap="round"/>
-      <path d="M15.5 13 Q17 11 18.5 13 Q20 15 21.5 13" stroke="white" stroke-width="1.8" fill="none"
-            stroke-linecap="round"/>
-      <path d="M12 13 Q13.5 11 15 13 Q16.5 15 18 13" stroke="white" stroke-width="1.8" fill="none"
-            stroke-linecap="round"/>
-      <!-- water pool -->
-      <ellipse cx="18" cy="22" rx="7" ry="4" fill="white" opacity="0.9"/>
+      <!-- tub / pool -->
+      <rect x="10" y="23" width="16" height="5.5" rx="2.75" fill="white" opacity="0.95"/>
+      <!-- steam wisps: 3 S-curves rising from pool -->
+      <path d="M13 22 Q11 18 13 15 Q15 12 13 9" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M18 22 Q16 18 18 15 Q20 12 18 9" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M23 22 Q21 18 23 15 Q25 12 23 9" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
     </svg>`;
 }
 
@@ -116,8 +117,18 @@ function addMarkers(locations) {
 }
 
 // ---------------------------------------------------------------------------
-// Filter
+// Filter & search visibility
 // ---------------------------------------------------------------------------
+
+function isLocationVisible(loc) {
+  const filterMatch = state.activeFilter === 'all' || loc.type === state.activeFilter;
+  if (!state.searchQuery) return filterMatch;
+  const q = state.searchQuery.toLowerCase();
+  const searchMatch = loc.name.toLowerCase().includes(q)
+    || loc.location.toLowerCase().includes(q)
+    || (loc.tags || []).some(t => t.includes(q));
+  return filterMatch && searchMatch;
+}
 
 function applyFilter(value) {
   state.activeFilter = value;
@@ -129,15 +140,17 @@ function applyFilter(value) {
 
   // Show / hide markers
   state.markers.forEach(({ marker, location }) => {
-    const visible = value === 'all' || location.type === value;
+    const visible = isLocationVisible(location);
     if (visible) {
       if (!map.hasLayer(marker)) map.addLayer(marker);
     } else {
       if (map.hasLayer(marker)) map.removeLayer(marker);
-      // If this marker's location was active and now hidden, close panel
       if (state.activeLocationId === location.id) closeInfoPanel();
     }
   });
+
+  // Re-render dropdown in case filter changed results
+  renderDropdown(state.searchQuery);
 }
 
 // ---------------------------------------------------------------------------
@@ -249,6 +262,253 @@ function panMapToMarker(location) {
 }
 
 // ---------------------------------------------------------------------------
+// Search
+// ---------------------------------------------------------------------------
+
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+
+function applySearch(query) {
+  state.searchQuery = query.trim();
+  state.markers.forEach(({ marker, location }) => {
+    const visible = isLocationVisible(location);
+    if (visible) {
+      if (!map.hasLayer(marker)) map.addLayer(marker);
+    } else {
+      if (map.hasLayer(marker)) map.removeLayer(marker);
+      if (state.activeLocationId === location.id) closeInfoPanel();
+    }
+  });
+  renderDropdown(query.trim());
+}
+
+function renderDropdown(query) {
+  if (!query) {
+    searchResults.classList.remove('is-visible');
+    searchResults.innerHTML = '';
+    return;
+  }
+
+  const q = query.toLowerCase();
+  const matches = state.locations
+    .filter(loc => isLocationVisible(loc))
+    .filter(loc =>
+      loc.name.toLowerCase().includes(q) ||
+      loc.location.toLowerCase().includes(q) ||
+      (loc.tags || []).some(t => t.includes(q))
+    )
+    .slice(0, 8);
+
+  if (matches.length === 0) {
+    searchResults.classList.remove('is-visible');
+    searchResults.innerHTML = '';
+    return;
+  }
+
+  searchResults.innerHTML = '';
+  matches.forEach(loc => {
+    const li = document.createElement('li');
+    li.className = loc.type === 'tree' ? 'result-tree' : 'result-hotspring';
+    li.setAttribute('role', 'option');
+    li.setAttribute('tabindex', '-1');
+    const icon = loc.type === 'tree' ? '🌲' : '♨️';
+    li.innerHTML =
+      `<div class="result-name"><span class="result-icon">${icon}</span>${escapeHtml(loc.name)}</div>` +
+      `<div class="result-location">${escapeHtml(loc.location)}</div>`;
+    li.addEventListener('click', () => {
+      clearSearch();
+      selectLocation(loc.id);
+    });
+    searchResults.appendChild(li);
+  });
+
+  searchResults.classList.add('is-visible');
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function clearSearch() {
+  searchInput.value = '';
+  state.searchQuery = '';
+  searchResults.classList.remove('is-visible');
+  searchResults.innerHTML = '';
+  // Restore marker visibility to filter-only state
+  state.markers.forEach(({ marker, location }) => {
+    const visible = isLocationVisible(location);
+    if (visible) {
+      if (!map.hasLayer(marker)) map.addLayer(marker);
+    } else {
+      if (map.hasLayer(marker)) map.removeLayer(marker);
+    }
+  });
+}
+
+function handleSearchKeydown(e) {
+  const items = searchResults.querySelectorAll('li');
+  if (!items.length) return;
+
+  if (e.key === 'Escape') {
+    clearSearch();
+    searchInput.blur();
+    return;
+  }
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    items[0].focus();
+    items[0].classList.add('is-focused');
+    return;
+  }
+}
+
+function handleResultKeydown(e, items, index) {
+  if (e.key === 'Escape') {
+    clearSearch();
+    searchInput.focus();
+    return;
+  }
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    items[index].click();
+    searchInput.focus();
+    return;
+  }
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    const next = items[index + 1];
+    if (next) {
+      items[index].classList.remove('is-focused');
+      next.classList.add('is-focused');
+      next.focus();
+    }
+    return;
+  }
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    const prev = items[index - 1];
+    if (prev) {
+      items[index].classList.remove('is-focused');
+      prev.classList.add('is-focused');
+      prev.focus();
+    } else {
+      items[index].classList.remove('is-focused');
+      searchInput.focus();
+    }
+    return;
+  }
+}
+
+// Attach keyboard navigation to result items (delegated from the list)
+searchResults.addEventListener('keydown', e => {
+  const items = Array.from(searchResults.querySelectorAll('li'));
+  const index = items.indexOf(e.target);
+  if (index !== -1) handleResultKeydown(e, items, index);
+});
+
+// Make result items focusable
+searchResults.addEventListener('focus', e => {
+  if (e.target.tagName === 'LI') e.target.classList.add('is-focused');
+}, true);
+searchResults.addEventListener('blur', e => {
+  if (e.target.tagName === 'LI') e.target.classList.remove('is-focused');
+}, true);
+
+// ---------------------------------------------------------------------------
+// User location
+// ---------------------------------------------------------------------------
+
+function toggleLocate() {
+  if (state.locationWatchId !== null) {
+    stopLocating();
+  } else {
+    startLocating();
+  }
+}
+
+function startLocating() {
+  if (!navigator.geolocation) {
+    setLocateBtnState('error');
+    setTimeout(() => setLocateBtnState('idle'), 3000);
+    return;
+  }
+  setLocateBtnState('loading');
+  state.locationWatchId = navigator.geolocation.watchPosition(
+    onLocationUpdate,
+    onLocationError,
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
+  );
+}
+
+function stopLocating() {
+  if (state.locationWatchId !== null) {
+    navigator.geolocation.clearWatch(state.locationWatchId);
+    state.locationWatchId = null;
+  }
+  if (state.locationMarker) { map.removeLayer(state.locationMarker); state.locationMarker = null; }
+  if (state.accuracyCircle) { map.removeLayer(state.accuracyCircle); state.accuracyCircle = null; }
+  setLocateBtnState('idle');
+}
+
+function onLocationUpdate(position) {
+  const { latitude, longitude, accuracy } = position.coords;
+  const latlng = L.latLng(latitude, longitude);
+  const isFirstFix = !state.locationMarker;
+
+  if (state.accuracyCircle) {
+    state.accuracyCircle.setLatLng(latlng).setRadius(accuracy);
+  } else {
+    state.accuracyCircle = L.circle(latlng, {
+      radius: accuracy,
+      color: '#2979ff',
+      fillColor: '#2979ff',
+      fillOpacity: 0.1,
+      weight: 1,
+      opacity: 0.25,
+    }).addTo(map);
+  }
+
+  if (state.locationMarker) {
+    state.locationMarker.setLatLng(latlng);
+  } else {
+    state.locationMarker = L.marker(latlng, {
+      icon: L.divIcon({
+        html: '<div class="user-location-dot"><div class="user-location-pulse"></div></div>',
+        className: '',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+      }),
+      zIndexOffset: 500,
+      interactive: false,
+    }).addTo(map);
+  }
+
+  setLocateBtnState('active');
+
+  // Pan to location only on the first fix
+  if (isFirstFix) {
+    map.panTo(latlng, { animate: true, duration: 0.5 });
+  }
+}
+
+function onLocationError(err) {
+  stopLocating();
+  setLocateBtnState('error');
+  setTimeout(() => setLocateBtnState('idle'), 3000);
+}
+
+function setLocateBtnState(s) {
+  const btn = document.getElementById('locate-btn');
+  btn.dataset.state = s;
+  btn.setAttribute('aria-pressed', s === 'active' ? 'true' : 'false');
+}
+
+// ---------------------------------------------------------------------------
 // Event listeners
 // ---------------------------------------------------------------------------
 
@@ -262,6 +522,24 @@ document.getElementById('close-btn').addEventListener('click', closeInfoPanel);
 
 // Scrim tap to close
 scrim.addEventListener('click', closeInfoPanel);
+
+// Search input
+searchInput.addEventListener('input', e => applySearch(e.target.value));
+searchInput.addEventListener('keydown', handleSearchKeydown);
+
+// Locate button
+document.getElementById('locate-btn').addEventListener('click', toggleLocate);
+
+// Clicking outside filter bar closes dropdown
+document.addEventListener('click', e => {
+  if (!e.target.closest('#filter-bar') && !e.target.closest('#search-results')) {
+    if (state.searchQuery) clearSearch();
+    else {
+      searchResults.classList.remove('is-visible');
+      searchResults.innerHTML = '';
+    }
+  }
+});
 
 // ---------------------------------------------------------------------------
 // Data loading

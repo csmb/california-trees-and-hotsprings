@@ -23,7 +23,23 @@
     <button class="filter-btn" data-filter="hotspring">
       <span class="filter-icon">♨️</span> Hot Springs
     </button>
+    <div id="search-divider"></div>
+    <input id="search-input" type="search" placeholder="Search…" autocomplete="off" aria-label="Search locations">
   </nav>
+
+  <!-- Search results dropdown -->
+  <ul id="search-results" role="listbox" aria-label="Search results"></ul>
+
+  <!-- Locate button -->
+  <button id="locate-btn" aria-label="Show my location" title="Show my location" data-state="idle" aria-pressed="false">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="3"/>
+      <line x1="12" y1="1" x2="12" y2="6"/>
+      <line x1="12" y1="18" x2="12" y2="23"/>
+      <line x1="1" y1="12" x2="6" y2="12"/>
+      <line x1="18" y1="12" x2="23" y2="12"/>
+    </svg>
+  </button>
 
   <!-- Map container -->
   <div id="map" role="main" aria-label="California map"></div>
