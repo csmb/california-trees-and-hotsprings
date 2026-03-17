@@ -27,9 +27,11 @@ const state = {
 const map = L.map('map', {
   center: [37.5, -119.5],
   zoom: 6,
-  zoomControl: true,
+  zoomControl: false,
   attributionControl: true,
 });
+
+L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
 L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
