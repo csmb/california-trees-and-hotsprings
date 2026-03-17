@@ -526,12 +526,23 @@ html, body {
   padding-left: 19px; /* align under name, past icon */
 }
 
-/* Mobile: wrap to two rows */
-@media (max-width: 480px) {
+/* Mobile: full-width bar, equal filter buttons, search on second row */
+@media (max-width: 600px) {
   #filter-bar {
+    left: 12px;
+    right: 12px;
+    transform: none;
     flex-wrap: wrap;
     border-radius: 16px;
     gap: 4px;
+    padding: 8px 8px;
+  }
+
+  .filter-btn {
+    flex: 1;
+    padding: 8px 4px;
+    font-size: 13px;
+    text-align: center;
   }
 
   #search-divider {
@@ -540,9 +551,18 @@ html, body {
 
   #search-input {
     width: 100%;
-    border-top: 1px solid rgba(0, 0, 0, 0.07);
-    padding-top: 8px;
-    margin-top: 4px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 8px 6px 4px;
+    margin-top: 2px;
+    font-size: 15px; /* prevents iOS auto-zoom on focus */
+  }
+
+  #search-results {
+    left: 12px;
+    right: 12px;
+    transform: none;
+    min-width: 0;
+    max-width: none;
   }
 }
 

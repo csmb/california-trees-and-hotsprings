@@ -322,6 +322,10 @@ function renderDropdown(query) {
     searchResults.appendChild(li);
   });
 
+  // Position dropdown just below the filter bar (handles mobile two-row height)
+  const barBottom = document.getElementById('filter-bar').getBoundingClientRect().bottom;
+  searchResults.style.top = (barBottom + 8) + 'px';
+
   searchResults.classList.add('is-visible');
 }
 
