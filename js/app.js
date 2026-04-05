@@ -257,12 +257,10 @@ function panMapToMarker(location) {
   const isMobile = window.innerWidth < 768;
 
   if (isMobile) {
-    // Pan so marker is in upper ~35% of screen (panel covers ~65% from bottom)
+    // Center marker in top half of screen (panel covers bottom 50%)
+    // Place map center H/4 below the marker so marker lands at 25% from top
     const targetPoint = map.project(latlng, map.getZoom());
-    const panelH = window.innerHeight * 0.72;
-    // shift the map center up by half the visible area above the panel
-    const offsetY = -(window.innerHeight * 0.5 - (window.innerHeight - panelH) * 0.5);
-    const newPoint = targetPoint.subtract([0, offsetY]);
+    const newPoint = targetPoint.add([0, window.innerHeight * 0.25]);
     map.panTo(map.unproject(newPoint, map.getZoom()), { animate: true, duration: 0.5 });
   } else {
     // Pan so marker is in center of the map area left of the 360px panel
