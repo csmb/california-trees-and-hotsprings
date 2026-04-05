@@ -291,7 +291,7 @@ function panMapToMarker(location) {
     // Center marker within the visible map area (viewport minus 360px panel on the right)
     const panelW = 360;
     const targetPoint = map.project(latlng, map.getZoom());
-    const newCenter = map.unproject(targetPoint.subtract([panelW / 2, 0]), map.getZoom());
+    const newCenter = map.unproject(targetPoint.add([panelW / 2, 0]), map.getZoom());
     map.panTo(newCenter, { animate: true, duration: 0.5 });
   }
 }
