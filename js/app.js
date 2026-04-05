@@ -12,7 +12,7 @@
 const state = {
   locations: [],          // raw data from JSON (+ optional Google Doc merge)
   markers: new Map(),     // id → { marker: L.Marker, el: HTMLElement }
-  activeFilter: 'all',
+  activeFilters: new Set(), // empty = show all
   activeLocationId: null,
   searchQuery: '',
   locationMarker: null,   // L.Marker for user's position dot
@@ -150,7 +150,7 @@ function addMarkers(locations) {
 // ---------------------------------------------------------------------------
 
 function isLocationVisible(loc) {
-  const filterMatch = state.activeFilter === 'all' || loc.type === state.activeFilter;
+  const filterMatch = state.activeFilters.size === 0 || state.activeFilters.has(loc.type);
   if (!state.searchQuery) return filterMatch;
   const q = state.searchQuery.toLowerCase();
   const searchMatch = loc.name.toLowerCase().includes(q)
@@ -160,11 +160,20 @@ function isLocationVisible(loc) {
 }
 
 function applyFilter(value) {
-  state.activeFilter = value;
+  if (value === 'all') {
+    state.activeFilters.clear();
+  } else {
+    if (state.activeFilters.has(value)) {
+      state.activeFilters.delete(value);
+    } else {
+      state.activeFilters.add(value);
+    }
+  }
 
   // Update button states
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.classList.toggle('is-active', btn.dataset.filter === value);
+  document.querySelector('.filter-btn[data-filter="all"]').classList.toggle('is-active', state.activeFilters.size === 0);
+  document.querySelectorAll('.filter-btn:not([data-filter="all"])').forEach(btn => {
+    btn.classList.toggle('is-active', state.activeFilters.has(btn.dataset.filter));
   });
 
   // Show / hide markers
@@ -279,12 +288,7 @@ function panMapToMarker(location) {
     const newPoint = targetPoint.add([0, window.innerHeight * 0.25]);
     map.panTo(map.unproject(newPoint, map.getZoom()), { animate: true, duration: 0.5 });
   } else {
-    // Pan so marker is in center of the map area left of the 360px panel
-    const targetPoint = map.project(latlng, map.getZoom());
-    const panelW = 360;
-    const offsetX = panelW / 2;
-    const newPoint = targetPoint.subtract([offsetX, 0]);
-    map.panTo(map.unproject(newPoint, map.getZoom()), { animate: true, duration: 0.5 });
+    map.panTo(latlng, { animate: true, duration: 0.5 });
   }
 }
 
