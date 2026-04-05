@@ -87,17 +87,19 @@ function hotspringSvg(active) {
     </svg>`;
 }
 
+function waterfallSvg(active) {
+  const fill = active ? '#1e3a8a' : '#1d4ed8';
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="44" viewBox="0 0 36 44">
+      <!-- pin body -->
+      <path d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 26 18 26S36 31.5 36 18C36 8.06 27.94 0 18 0z"
+            fill="${fill}" stroke="white" stroke-width="1.5"/>
+      <text x="18" y="22" text-anchor="middle" dominant-baseline="middle" font-size="17">💧</text>
+    </svg>`;
+}
+
 function createMarkerIcon(type, isActive) {
-  if (type === 'waterfall') {
-    return L.divIcon({
-      html: `<div class="waterfall-emoji-marker${isActive ? ' marker-active' : ''}">💧</div>`,
-      className: '',
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32],
-    });
-  }
-  const svg = type === 'tree' ? treeSvg(isActive) : hotspringSvg(isActive);
+  const svg = type === 'tree' ? treeSvg(isActive) : type === 'waterfall' ? waterfallSvg(isActive) : hotspringSvg(isActive);
   return L.divIcon({
     html: `<div class="map-marker${isActive ? ' marker-active' : ''}">${svg}</div>`,
     className: '',

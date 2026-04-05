@@ -349,23 +349,6 @@ html, body {
   z-index: 9999 !important;
 }
 
-.waterfall-emoji-marker {
-  font-size: 24px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
-  transition: transform 0.15s ease, filter 0.15s ease;
-  cursor: pointer;
-  user-select: none;
-}
-
-.waterfall-emoji-marker.marker-active {
-  transform: scale(1.35);
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.45));
-  z-index: 9999 !important;
-}
 
 /* Leaflet z-index override for active marker */
 .leaflet-marker-icon.marker-active {
