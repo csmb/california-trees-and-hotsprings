@@ -76,6 +76,10 @@ html, body {
   background: #0077b6;
 }
 
+.filter-btn[data-filter="waterfall"].is-active {
+  background: #4895ef;
+}
+
 .filter-icon {
   font-size: 13px;
 }
@@ -249,6 +253,11 @@ html, body {
   color: #03045e;
 }
 
+#type-badge.badge-waterfall {
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+
 #panel-name {
   font-size: 22px;
   font-weight: 700;
@@ -312,6 +321,14 @@ html, body {
   background: #03045e;
 }
 
+#panel-source.waterfall-source {
+  background: #4895ef;
+}
+
+#panel-source.waterfall-source:hover {
+  background: #1e6091;
+}
+
 /* ============================================================
    Custom marker styles
    ============================================================ */
@@ -327,6 +344,24 @@ html, body {
 
 .map-marker.marker-active {
   transform: scale(1.25);
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.45));
+  z-index: 9999 !important;
+}
+
+.waterfall-emoji-marker {
+  font-size: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+  transition: transform 0.15s ease, filter 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.waterfall-emoji-marker.marker-active {
+  transform: scale(1.35);
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.45));
   z-index: 9999 !important;
 }
@@ -526,6 +561,16 @@ html, body {
 #search-results li.result-hotspring:hover,
 #search-results li.result-hotspring.is-focused {
   background: rgba(0, 119, 182, 0.1);
+}
+
+#search-results li.result-waterfall {
+  border-left-color: #4895ef;
+  background: rgba(72, 149, 239, 0.04);
+}
+
+#search-results li.result-waterfall:hover,
+#search-results li.result-waterfall.is-focused {
+  background: rgba(72, 149, 239, 0.1);
 }
 
 .result-name {

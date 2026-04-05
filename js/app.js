@@ -88,6 +88,15 @@ function hotspringSvg(active) {
 }
 
 function createMarkerIcon(type, isActive) {
+  if (type === 'waterfall') {
+    return L.divIcon({
+      html: `<div class="waterfall-emoji-marker${isActive ? ' marker-active' : ''}">💧</div>`,
+      className: '',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
+    });
+  }
   const svg = type === 'tree' ? treeSvg(isActive) : hotspringSvg(isActive);
   return L.divIcon({
     html: `<div class="map-marker${isActive ? ' marker-active' : ''}">${svg}</div>`,
@@ -200,8 +209,8 @@ function deactivateMarker(id) {
 
 function populatePanel(loc) {
   const badge = document.getElementById('type-badge');
-  badge.textContent = loc.type === 'tree' ? 'Tree' : 'Hot Spring';
-  badge.className = loc.type === 'tree' ? 'badge-tree' : 'badge-hotspring';
+  badge.textContent = loc.type === 'tree' ? 'Tree' : loc.type === 'waterfall' ? 'Waterfall' : 'Hot Spring';
+  badge.className = loc.type === 'tree' ? 'badge-tree' : loc.type === 'waterfall' ? 'badge-waterfall' : 'badge-hotspring';
 
   document.getElementById('panel-name').textContent = loc.name;
   document.getElementById('panel-location').textContent = loc.location;
@@ -220,7 +229,7 @@ function populatePanel(loc) {
   // Source link
   const sourceEl = document.getElementById('panel-source');
   sourceEl.href = loc.source || '#';
-  sourceEl.className = loc.type === 'hotspring' ? 'hotspring-source' : '';
+  sourceEl.className = loc.type === 'hotspring' ? 'hotspring-source' : loc.type === 'waterfall' ? 'waterfall-source' : '';
   sourceEl.style.display = loc.source ? 'inline-block' : 'none';
 }
 
@@ -312,10 +321,10 @@ function renderDropdown(query) {
   searchResults.innerHTML = '';
   matches.forEach(loc => {
     const li = document.createElement('li');
-    li.className = loc.type === 'tree' ? 'result-tree' : 'result-hotspring';
+    li.className = loc.type === 'tree' ? 'result-tree' : loc.type === 'waterfall' ? 'result-waterfall' : 'result-hotspring';
     li.setAttribute('role', 'option');
     li.setAttribute('tabindex', '-1');
-    const icon = loc.type === 'tree' ? '🌲' : '♨️';
+    const icon = loc.type === 'tree' ? '🌲' : loc.type === 'waterfall' ? '💧' : '♨️';
     li.innerHTML =
       `<div class="result-name"><span class="result-icon">${icon}</span>${escapeHtml(loc.name)}</div>` +
       `<div class="result-location">${escapeHtml(loc.location)}</div>`;
