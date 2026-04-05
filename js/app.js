@@ -87,6 +87,17 @@ function hotspringSvg(active) {
     </svg>`;
 }
 
+function popsSvg(active) {
+  const fill = active ? '#713f12' : '#a16207';
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="44" viewBox="0 0 36 44">
+      <!-- pin body -->
+      <path d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 26 18 26S36 31.5 36 18C36 8.06 27.94 0 18 0z"
+            fill="${fill}" stroke="white" stroke-width="1.5"/>
+      <text x="18" y="22" text-anchor="middle" dominant-baseline="middle" font-size="17">🏛️</text>
+    </svg>`;
+}
+
 function waterfallSvg(active) {
   const fill = active ? '#1e3a8a' : '#1d4ed8';
   return `
@@ -99,7 +110,10 @@ function waterfallSvg(active) {
 }
 
 function createMarkerIcon(type, isActive) {
-  const svg = type === 'tree' ? treeSvg(isActive) : type === 'waterfall' ? waterfallSvg(isActive) : hotspringSvg(isActive);
+  const svg = type === 'tree' ? treeSvg(isActive)
+    : type === 'waterfall' ? waterfallSvg(isActive)
+    : type === 'pops' ? popsSvg(isActive)
+    : hotspringSvg(isActive);
   return L.divIcon({
     html: `<div class="map-marker${isActive ? ' marker-active' : ''}">${svg}</div>`,
     className: '',
@@ -211,8 +225,8 @@ function deactivateMarker(id) {
 
 function populatePanel(loc) {
   const badge = document.getElementById('type-badge');
-  badge.textContent = loc.type === 'tree' ? 'Tree' : loc.type === 'waterfall' ? 'Waterfall' : 'Hot Spring';
-  badge.className = loc.type === 'tree' ? 'badge-tree' : loc.type === 'waterfall' ? 'badge-waterfall' : 'badge-hotspring';
+  badge.textContent = loc.type === 'tree' ? 'Tree' : loc.type === 'waterfall' ? 'Waterfall' : loc.type === 'pops' ? 'POPS' : 'Hot Spring';
+  badge.className = loc.type === 'tree' ? 'badge-tree' : loc.type === 'waterfall' ? 'badge-waterfall' : loc.type === 'pops' ? 'badge-pops' : 'badge-hotspring';
 
   document.getElementById('panel-name').textContent = loc.name;
   document.getElementById('panel-location').textContent = loc.location;
@@ -231,7 +245,7 @@ function populatePanel(loc) {
   // Source link
   const sourceEl = document.getElementById('panel-source');
   sourceEl.href = loc.source || '#';
-  sourceEl.className = loc.type === 'hotspring' ? 'hotspring-source' : loc.type === 'waterfall' ? 'waterfall-source' : '';
+  sourceEl.className = loc.type === 'hotspring' ? 'hotspring-source' : loc.type === 'waterfall' ? 'waterfall-source' : loc.type === 'pops' ? 'pops-source' : '';
   sourceEl.style.display = loc.source ? 'inline-block' : 'none';
 }
 
@@ -321,10 +335,10 @@ function renderDropdown(query) {
   searchResults.innerHTML = '';
   matches.forEach(loc => {
     const li = document.createElement('li');
-    li.className = loc.type === 'tree' ? 'result-tree' : loc.type === 'waterfall' ? 'result-waterfall' : 'result-hotspring';
+    li.className = loc.type === 'tree' ? 'result-tree' : loc.type === 'waterfall' ? 'result-waterfall' : loc.type === 'pops' ? 'result-pops' : 'result-hotspring';
     li.setAttribute('role', 'option');
     li.setAttribute('tabindex', '-1');
-    const icon = loc.type === 'tree' ? '🌲' : loc.type === 'waterfall' ? '💧' : '♨️';
+    const icon = loc.type === 'tree' ? '🌲' : loc.type === 'waterfall' ? '💧' : loc.type === 'pops' ? '🏛️' : '♨️';
     li.innerHTML =
       `<div class="result-name"><span class="result-icon">${icon}</span>${escapeHtml(loc.name)}</div>` +
       `<div class="result-location">${escapeHtml(loc.location)}</div>`;

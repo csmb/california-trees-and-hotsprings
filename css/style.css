@@ -80,6 +80,10 @@ html, body {
   background: #4895ef;
 }
 
+.filter-btn[data-filter="pops"].is-active {
+  background: #a16207;
+}
+
 .filter-icon {
   font-size: 13px;
 }
@@ -257,6 +261,11 @@ html, body {
 #type-badge.badge-waterfall {
   background: #dbeafe;
   color: #1e3a8a;
+}
+
+#type-badge.badge-pops {
+  background: #fef3c7;
+  color: #713f12;
 }
 
 #panel-name {
@@ -555,6 +564,16 @@ html, body {
 #search-results li.result-waterfall:hover,
 #search-results li.result-waterfall.is-focused {
   background: rgba(72, 149, 239, 0.1);
+}
+
+#search-results li.result-pops {
+  border-left-color: #a16207;
+  background: rgba(161, 98, 7, 0.04);
+}
+
+#search-results li.result-pops:hover,
+#search-results li.result-pops.is-focused {
+  background: rgba(161, 98, 7, 0.1);
 }
 
 .result-name {
