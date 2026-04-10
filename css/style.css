@@ -443,7 +443,7 @@ html, body {
 }
 
 #locate-btn[data-state="active"] {
-  color: #2979ff;
+  color: #c0392b;
 }
 
 #locate-btn[data-state="loading"] {
@@ -489,7 +489,7 @@ html, body {
 .user-location-dot {
   width: 16px;
   height: 16px;
-  background: #2979ff;
+  background: #c0392b;
   border-radius: 50%;
   border: 2.5px solid white;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
@@ -500,7 +500,7 @@ html, body {
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  background: rgba(41, 121, 255, 0.28);
+  background: rgba(192, 57, 43, 0.28);
   animation: loc-pulse 2s ease-out infinite;
 }
 
