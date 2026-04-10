@@ -370,8 +370,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
-  transition: transform 0.15s ease, filter 0.15s ease;
+  transition: transform 0.15s ease;
   cursor: pointer;
 }
 
