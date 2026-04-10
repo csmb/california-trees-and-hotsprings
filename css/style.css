@@ -643,7 +643,7 @@ html, body {
 }
 
 /* Mobile: full-width bar, equal filter buttons, search on second row */
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   #filter-bar {
     left: 12px;
     right: 12px;
