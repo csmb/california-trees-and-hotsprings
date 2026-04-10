@@ -651,7 +651,9 @@ scrim.addEventListener('click', closeInfoPanel);
 
   panel.addEventListener('touchstart', e => {
     if (window.innerWidth >= 768) return;
+    if (panel.scrollTop > 0) return; // let panel scroll normally if not at top
     startY = e.touches[0].clientY;
+    currentY = startY;
     dragging = true;
     panel.style.transition = 'none';
   }, { passive: true });
@@ -660,9 +662,10 @@ scrim.addEventListener('click', closeInfoPanel);
     if (!dragging) return;
     currentY = e.touches[0].clientY;
     const delta = Math.max(0, currentY - startY); // only allow downward drag
+    if (delta > 0) e.preventDefault(); // block Chrome pull-to-refresh
     panel.style.transform = `translateY(${delta}px)`;
     panel.style.opacity = Math.max(0.5, 1 - delta / 300);
-  }, { passive: true });
+  }, { passive: false }); // passive:false required for preventDefault
 
   panel.addEventListener('touchend', () => {
     if (!dragging) return;
