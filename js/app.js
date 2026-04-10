@@ -618,6 +618,43 @@ document.getElementById('close-btn').addEventListener('click', closeInfoPanel);
 // Scrim tap to close
 scrim.addEventListener('click', closeInfoPanel);
 
+// ---------------------------------------------------------------------------
+// Drag to dismiss (mobile)
+// ---------------------------------------------------------------------------
+
+(function initDragToDismiss() {
+  let startY = 0;
+  let currentY = 0;
+  let dragging = false;
+
+  panel.addEventListener('touchstart', e => {
+    if (window.innerWidth >= 768) return;
+    startY = e.touches[0].clientY;
+    dragging = true;
+    panel.style.transition = 'none';
+  }, { passive: true });
+
+  panel.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    currentY = e.touches[0].clientY;
+    const delta = Math.max(0, currentY - startY); // only allow downward drag
+    panel.style.transform = `translateY(${delta}px)`;
+  }, { passive: true });
+
+  panel.addEventListener('touchend', () => {
+    if (!dragging) return;
+    dragging = false;
+    panel.style.transition = '';
+    const delta = Math.max(0, currentY - startY);
+    if (delta > 120) {
+      panel.style.transform = '';
+      closeInfoPanel();
+    } else {
+      panel.style.transform = ''; // snap back
+    }
+  });
+})();
+
 // Search input
 searchInput.addEventListener('input', e => applySearch(e.target.value));
 searchInput.addEventListener('keydown', handleSearchKeydown);
