@@ -326,7 +326,7 @@ function panMapToMarker(location) {
     // Center marker in top half of screen (panel covers bottom 50%)
     // Place map center H/4 below the marker so marker lands at 25% from top
     const targetPoint = map.project(latlng, map.getZoom());
-    const newPoint = targetPoint.add([0, window.innerHeight * 0.25]);
+    const newPoint = targetPoint.add([0, map.getContainer().clientHeight * 0.25]);
     map.panTo(map.unproject(newPoint, map.getZoom()), { animate: true, duration: 0.5 });
   } else {
     // Center marker within the visible map area (viewport minus 360px panel on the right)
