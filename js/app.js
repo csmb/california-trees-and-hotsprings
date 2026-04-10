@@ -33,6 +33,26 @@ const map = L.map('map', {
 
 L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
+// ---------------------------------------------------------------------------
+// Marker cluster group
+// ---------------------------------------------------------------------------
+
+const clusterGroup = L.markerClusterGroup({
+  showCoverageOnHover: false,
+  maxClusterRadius: 50,
+  iconCreateFunction(cluster) {
+    const count = cluster.getChildCount();
+    const size = count < 10 ? 36 : count < 100 ? 42 : 48;
+    return L.divIcon({
+      html: `<div class="cluster-icon">${count}</div>`,
+      className: '',
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
+    });
+  },
+});
+clusterGroup.addTo(map);
+
 L.tileLayer(
   'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
   {
@@ -133,7 +153,8 @@ function addMarkers(locations) {
       icon: createMarkerIcon(loc.type, false),
       title: loc.name,
       riseOnHover: true,
-    }).addTo(map);
+    });
+    clusterGroup.addLayer(marker);
 
     marker.on('click', (e) => {
       L.DomEvent.stopPropagation(e);
@@ -180,9 +201,9 @@ function applyFilter(value) {
   state.markers.forEach(({ marker, location }) => {
     const visible = isLocationVisible(location);
     if (visible) {
-      if (!map.hasLayer(marker)) map.addLayer(marker);
+      if (!clusterGroup.hasLayer(marker)) clusterGroup.addLayer(marker);
     } else {
-      if (map.hasLayer(marker)) map.removeLayer(marker);
+      if (clusterGroup.hasLayer(marker)) clusterGroup.removeLayer(marker);
       if (state.activeLocationId === location.id) closeInfoPanel();
     }
   });
@@ -308,9 +329,9 @@ function applySearch(query) {
   state.markers.forEach(({ marker, location }) => {
     const visible = isLocationVisible(location);
     if (visible) {
-      if (!map.hasLayer(marker)) map.addLayer(marker);
+      if (!clusterGroup.hasLayer(marker)) clusterGroup.addLayer(marker);
     } else {
-      if (map.hasLayer(marker)) map.removeLayer(marker);
+      if (clusterGroup.hasLayer(marker)) clusterGroup.removeLayer(marker);
       if (state.activeLocationId === location.id) closeInfoPanel();
     }
   });
@@ -381,9 +402,9 @@ function clearSearch() {
   state.markers.forEach(({ marker, location }) => {
     const visible = isLocationVisible(location);
     if (visible) {
-      if (!map.hasLayer(marker)) map.addLayer(marker);
+      if (!clusterGroup.hasLayer(marker)) clusterGroup.addLayer(marker);
     } else {
-      if (map.hasLayer(marker)) map.removeLayer(marker);
+      if (clusterGroup.hasLayer(marker)) clusterGroup.removeLayer(marker);
     }
   });
 }
