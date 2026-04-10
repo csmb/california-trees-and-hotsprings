@@ -111,18 +111,24 @@ function waterfallSvg(active) {
     </svg>`;
 }
 
+const iconCache = new Map();
+
 function createMarkerIcon(type, isActive) {
+  const key = `${type}-${isActive}`;
+  if (iconCache.has(key)) return iconCache.get(key);
   const svg = type === 'tree' ? treeSvg(isActive)
     : type === 'waterfall' ? waterfallSvg(isActive)
     : type === 'pops' ? popsSvg(isActive)
     : hotspringSvg(isActive);
-  return L.divIcon({
+  const icon = L.divIcon({
     html: `<div class="map-marker${isActive ? ' marker-active' : ''}">${svg}</div>`,
     className: '',
     iconSize: [36, 44],
     iconAnchor: [18, 44],
     popupAnchor: [0, -44],
   });
+  iconCache.set(key, icon);
+  return icon;
 }
 
 // ---------------------------------------------------------------------------
