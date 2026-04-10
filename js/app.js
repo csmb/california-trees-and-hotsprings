@@ -661,12 +661,14 @@ scrim.addEventListener('click', closeInfoPanel);
     currentY = e.touches[0].clientY;
     const delta = Math.max(0, currentY - startY); // only allow downward drag
     panel.style.transform = `translateY(${delta}px)`;
+    panel.style.opacity = Math.max(0.5, 1 - delta / 300);
   }, { passive: true });
 
   panel.addEventListener('touchend', () => {
     if (!dragging) return;
     dragging = false;
     panel.style.transition = '';
+    panel.style.opacity = '';
     const delta = Math.max(0, currentY - startY);
     if (delta > 120) {
       panel.style.transform = '';
