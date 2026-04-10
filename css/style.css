@@ -77,7 +77,7 @@ html, body {
 }
 
 .filter-btn[data-filter="waterfall"].is-active {
-  background: #4895ef;
+  background: #1d4ed8;
 }
 
 .filter-btn[data-filter="pops"].is-active {
@@ -332,7 +332,7 @@ html, body {
 }
 
 #panel-source.waterfall-source {
-  background: #4895ef;
+  background: #1d4ed8;
 }
 
 #panel-source.waterfall-source:hover {
