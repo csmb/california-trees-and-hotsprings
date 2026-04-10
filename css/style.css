@@ -67,6 +67,11 @@ html, body {
   color: #222;
 }
 
+.filter-btn:focus-visible {
+  outline: 2px solid #2d6a4f;
+  outline-offset: 2px;
+}
+
 .filter-btn.is-active {
   background: #2d6a4f;
   color: #fff;
@@ -220,6 +225,11 @@ html, body {
   background: rgba(0, 0, 0, 0.15);
 }
 
+#close-btn:focus-visible {
+  outline: 2px solid #2d6a4f;
+  outline-offset: 2px;
+}
+
 /* ============================================================
    Panel content
    ============================================================ */
@@ -323,6 +333,11 @@ html, body {
   background: #1b4332;
 }
 
+#panel-source:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 #panel-source.hotspring-source {
   background: #0077b6;
 }
@@ -420,6 +435,11 @@ html, body {
   background: rgba(255, 255, 255, 0.98);
   color: #333;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+}
+
+#locate-btn:focus-visible {
+  outline: 2px solid #2d6a4f;
+  outline-offset: 2px;
 }
 
 #locate-btn[data-state="active"] {
