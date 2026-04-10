@@ -35,24 +35,41 @@ const map = L.map('map', {
 L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
 // ---------------------------------------------------------------------------
-// Marker cluster group
+// Marker cluster groups (one per type)
 // ---------------------------------------------------------------------------
 
-const clusterGroup = L.markerClusterGroup({
-  showCoverageOnHover: false,
-  maxClusterRadius: 50,
-  iconCreateFunction(cluster) {
-    const count = cluster.getChildCount();
-    const size = count < 10 ? 36 : count < 100 ? 42 : 48;
-    return L.divIcon({
-      html: `<div class="cluster-icon">${count}</div>`,
-      className: '',
-      iconSize: [size, size],
-      iconAnchor: [size / 2, size / 2],
-    });
-  },
-});
-clusterGroup.addTo(map);
+const clusterColors = {
+  tree:      '#2d6a4f',
+  hotspring: '#0077b6',
+  waterfall: '#1d4ed8',
+  pops:      '#a16207',
+};
+
+function makeClusterGroup(type) {
+  const color = clusterColors[type];
+  return L.markerClusterGroup({
+    showCoverageOnHover: false,
+    maxClusterRadius: 50,
+    iconCreateFunction(cluster) {
+      const count = cluster.getChildCount();
+      const size = count < 10 ? 36 : count < 100 ? 42 : 48;
+      return L.divIcon({
+        html: `<div class="cluster-icon" style="background:${color}">${count}</div>`,
+        className: '',
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2],
+      });
+    },
+  });
+}
+
+const clusterGroups = {
+  tree:      makeClusterGroup('tree'),
+  hotspring: makeClusterGroup('hotspring'),
+  waterfall: makeClusterGroup('waterfall'),
+  pops:      makeClusterGroup('pops'),
+};
+Object.values(clusterGroups).forEach(g => g.addTo(map));
 
 L.tileLayer(
   'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
@@ -155,7 +172,7 @@ function addMarkers(locations) {
       title: loc.name,
       riseOnHover: true,
     });
-    clusterGroup.addLayer(marker);
+    clusterGroups[loc.type].addLayer(marker);
 
     marker.on('click', (e) => {
       L.DomEvent.stopPropagation(e);
@@ -202,9 +219,9 @@ function applyFilter(value) {
   state.markers.forEach(({ marker, location }) => {
     const visible = isLocationVisible(location);
     if (visible) {
-      if (!clusterGroup.hasLayer(marker)) clusterGroup.addLayer(marker);
+      if (!clusterGroups[location.type].hasLayer(marker)) clusterGroups[location.type].addLayer(marker);
     } else {
-      if (clusterGroup.hasLayer(marker)) clusterGroup.removeLayer(marker);
+      if (clusterGroups[location.type].hasLayer(marker)) clusterGroups[location.type].removeLayer(marker);
       if (state.activeLocationId === location.id) closeInfoPanel();
     }
   });
@@ -332,9 +349,9 @@ function applySearch(query) {
   state.markers.forEach(({ marker, location }) => {
     const visible = isLocationVisible(location);
     if (visible) {
-      if (!clusterGroup.hasLayer(marker)) clusterGroup.addLayer(marker);
+      if (!clusterGroups[location.type].hasLayer(marker)) clusterGroups[location.type].addLayer(marker);
     } else {
-      if (clusterGroup.hasLayer(marker)) clusterGroup.removeLayer(marker);
+      if (clusterGroups[location.type].hasLayer(marker)) clusterGroups[location.type].removeLayer(marker);
       if (state.activeLocationId === location.id) closeInfoPanel();
     }
   });
@@ -405,9 +422,9 @@ function clearSearch() {
   state.markers.forEach(({ marker, location }) => {
     const visible = isLocationVisible(location);
     if (visible) {
-      if (!clusterGroup.hasLayer(marker)) clusterGroup.addLayer(marker);
+      if (!clusterGroups[location.type].hasLayer(marker)) clusterGroups[location.type].addLayer(marker);
     } else {
-      if (clusterGroup.hasLayer(marker)) clusterGroup.removeLayer(marker);
+      if (clusterGroups[location.type].hasLayer(marker)) clusterGroups[location.type].removeLayer(marker);
     }
   });
 }
