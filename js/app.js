@@ -134,7 +134,6 @@ function addMarkers(locations) {
     const marker = L.marker([loc.lat, loc.lng], {
       icon: createMarkerIcon(loc.type, false),
       title: loc.name,
-      riseOnHover: true,
     });
     marker.addTo(map);
 
