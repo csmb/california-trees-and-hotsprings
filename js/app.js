@@ -54,6 +54,24 @@ map.on('click', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Viewport culling — only add markers near the visible area to the DOM
+// ---------------------------------------------------------------------------
+
+function refreshViewport() {
+  const bounds = map.getBounds().pad(0.4);
+  state.markers.forEach(entry => {
+    const inBounds = bounds.contains([entry.location.lat, entry.location.lng]);
+    if (entry.shown && inBounds) {
+      if (!map.hasLayer(entry.marker)) map.addLayer(entry.marker);
+    } else {
+      if (map.hasLayer(entry.marker)) map.removeLayer(entry.marker);
+    }
+  });
+}
+
+map.on('moveend zoomend', refreshViewport);
+
+// ---------------------------------------------------------------------------
 // SVG marker icons
 // ---------------------------------------------------------------------------
 
@@ -148,8 +166,7 @@ function addMarkers(locations) {
       selectLocation(loc.id);
     });
 
-    // Store reference to the icon element for active-state swapping
-    state.markers.set(loc.id, { marker, location: loc });
+    state.markers.set(loc.id, { marker, location: loc, shown: true });
   });
 }
 
@@ -184,16 +201,12 @@ function applyFilter(value) {
     btn.classList.toggle('is-active', state.activeFilters.has(btn.dataset.filter));
   });
 
-  // Show / hide markers
-  state.markers.forEach(({ marker, location }) => {
-    const visible = isLocationVisible(location);
-    if (visible) {
-      if (!map.hasLayer(marker)) map.addLayer(marker);
-    } else {
-      if (map.hasLayer(marker)) map.removeLayer(marker);
-      if (state.activeLocationId === location.id) closeInfoPanel();
-    }
+  // Update shown state; viewport culling handles actual map layer membership
+  state.markers.forEach(entry => {
+    entry.shown = isLocationVisible(entry.location);
+    if (!entry.shown && state.activeLocationId === entry.location.id) closeInfoPanel();
   });
+  refreshViewport();
 
   // Re-render dropdown in case filter changed results
   renderDropdown(state.searchQuery);
@@ -315,15 +328,11 @@ const searchResults = document.getElementById('search-results');
 
 function applySearch(query) {
   state.searchQuery = query.trim();
-  state.markers.forEach(({ marker, location }) => {
-    const visible = isLocationVisible(location);
-    if (visible) {
-      if (!map.hasLayer(marker)) map.addLayer(marker);
-    } else {
-      if (map.hasLayer(marker)) map.removeLayer(marker);
-      if (state.activeLocationId === location.id) closeInfoPanel();
-    }
+  state.markers.forEach(entry => {
+    entry.shown = isLocationVisible(entry.location);
+    if (!entry.shown && state.activeLocationId === entry.location.id) closeInfoPanel();
   });
+  refreshViewport();
   renderDropdown(query.trim());
 }
 
@@ -391,15 +400,8 @@ function clearSearch() {
   searchResults.classList.remove('is-visible');
   searchResults.innerHTML = '';
   searchInput.setAttribute('aria-expanded', 'false');
-  // Restore marker visibility to filter-only state
-  state.markers.forEach(({ marker, location }) => {
-    const visible = isLocationVisible(location);
-    if (visible) {
-      if (!map.hasLayer(marker)) map.addLayer(marker);
-    } else {
-      if (map.hasLayer(marker)) map.removeLayer(marker);
-    }
-  });
+  state.markers.forEach(entry => { entry.shown = isLocationVisible(entry.location); });
+  refreshViewport();
 }
 
 function handleSearchKeydown(e) {
