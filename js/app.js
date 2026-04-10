@@ -362,6 +362,7 @@ function renderDropdown(query) {
   if (!query) {
     searchResults.classList.remove('is-visible');
     searchResults.innerHTML = '';
+    searchInput.setAttribute('aria-expanded', 'false');
     return;
   }
 
@@ -378,6 +379,7 @@ function renderDropdown(query) {
   if (matches.length === 0) {
     searchResults.classList.remove('is-visible');
     searchResults.innerHTML = '';
+    searchInput.setAttribute('aria-expanded', 'false');
     return;
   }
 
@@ -403,6 +405,7 @@ function renderDropdown(query) {
   searchResults.style.top = (barBottom + 8) + 'px';
 
   searchResults.classList.add('is-visible');
+  searchInput.setAttribute('aria-expanded', 'true');
 }
 
 function escapeHtml(str) {
@@ -418,6 +421,7 @@ function clearSearch() {
   state.searchQuery = '';
   searchResults.classList.remove('is-visible');
   searchResults.innerHTML = '';
+  searchInput.setAttribute('aria-expanded', 'false');
   // Restore marker visibility to filter-only state
   state.markers.forEach(({ marker, location }) => {
     const visible = isLocationVisible(location);
