@@ -339,6 +339,14 @@ html, body {
   background: #1e6091;
 }
 
+#panel-source.pops-source {
+  background: #a16207;
+}
+
+#panel-source.pops-source:hover {
+  background: #713f12;
+}
+
 /* ============================================================
    Custom marker styles
    ============================================================ */

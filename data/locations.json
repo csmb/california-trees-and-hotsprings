@@ -10405,7 +10405,8 @@
         "park",
         "art",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-55-second-st-c",
@@ -10421,7 +10422,8 @@
         "art",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-millenium-tower-plaza",
@@ -10439,7 +10441,8 @@
         "art",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-425-market-st",
@@ -10453,7 +10456,8 @@
         "garden",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-77-van-ness-ave",
@@ -10469,7 +10473,8 @@
         "art",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-345-california-st-a",
@@ -10483,7 +10488,8 @@
         "plaza",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-345-california-st-east-b",
@@ -10497,7 +10503,8 @@
         "snippet",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-345-california-st-west-c",
@@ -10511,7 +10518,8 @@
         "snippet",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-embarcadero-center-west-1-2-3",
@@ -10526,7 +10534,8 @@
         "food",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-250-howard",
@@ -10538,7 +10547,8 @@
       "location": "250 Howard, San Francisco, CA",
       "tags": [
         "park"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-333-market-st",
@@ -10552,7 +10562,8 @@
         "plaza",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-555-mission-st",
@@ -10568,7 +10579,8 @@
         "art",
         "restrooms",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-foundry-square-ne",
@@ -10583,7 +10595,8 @@
         "food",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-foundry-square-se",
@@ -10598,7 +10611,8 @@
         "food",
         "art",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-foundry-square-nw",
@@ -10613,7 +10627,8 @@
         "food",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-235-second-st",
@@ -10630,7 +10645,8 @@
         "food",
         "art",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-560-mission-st",
@@ -10648,7 +10664,8 @@
         "art",
         "restrooms",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-marriott-courtyard-a-starbucks",
@@ -10663,7 +10680,8 @@
         "food",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-marriott-courtyard-b-starbucks",
@@ -10678,7 +10696,8 @@
         "food",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-marriott-courtyard-c",
@@ -10693,7 +10712,8 @@
         "art",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-101-2nd-st",
@@ -10710,7 +10730,8 @@
         "art",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-199-fremont-st",
@@ -10725,7 +10746,8 @@
         "food",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-343-sansome",
@@ -10741,7 +10763,8 @@
         "art",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-211-main-st",
@@ -10754,7 +10777,8 @@
       "tags": [
         "plaza",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-empire-park",
@@ -10768,7 +10792,8 @@
         "park",
         "food",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-100-california-st",
@@ -10782,7 +10807,8 @@
         "plaza",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-commercial-street-235-pine-entitlement",
@@ -10795,7 +10821,8 @@
       "tags": [
         "snippet",
         "food"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-120-howard-st",
@@ -10810,7 +10837,8 @@
         "snippet",
         "food",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-1-kearny-st",
@@ -10824,7 +10852,8 @@
         "terrace",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-55-second-st-a",
@@ -10841,7 +10870,8 @@
         "restrooms",
         "business-hours",
         "amenities"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-55-second-st-b",
@@ -10855,7 +10885,8 @@
         "snippet",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-rincon-center",
@@ -10871,7 +10902,8 @@
         "food",
         "art",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-123-mission-st",
@@ -10886,7 +10918,8 @@
         "food",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-525-market-st",
@@ -10901,7 +10934,8 @@
         "food",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-150-california-st",
@@ -10915,7 +10949,8 @@
         "terrace",
         "art",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-600-california-st",
@@ -10930,7 +10965,8 @@
         "food",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-westfield-sky-terrace-wesfield-center-mall",
@@ -10944,7 +10980,8 @@
         "terrace",
         "food",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-100-1st-st",
@@ -10962,7 +10999,8 @@
         "food",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-200-california-st",
@@ -10976,7 +11014,8 @@
         "walkway",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-49-stevenson-st",
@@ -10992,7 +11031,8 @@
         "art",
         "restrooms",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-marathon-plaza",
@@ -11008,7 +11048,8 @@
         "art",
         "restrooms",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-gap-building",
@@ -11022,7 +11063,8 @@
         "garden",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-1-market-st",
@@ -11040,7 +11082,8 @@
         "art",
         "restrooms",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-71-stevenson-st",
@@ -11054,7 +11097,8 @@
         "walkway",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-14-fremont-st",
@@ -11069,7 +11113,8 @@
         "food",
         "restrooms",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-456-montomery-st",
@@ -11083,7 +11128,8 @@
         "plaza",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-citygroup-center",
@@ -11098,7 +11144,8 @@
         "food",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-trinity-alley",
@@ -11112,7 +11159,8 @@
         "walkway",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-spear-street-plaza",
@@ -11127,7 +11175,8 @@
         "food",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-25-jessie-st",
@@ -11142,7 +11191,8 @@
         "food",
         "restrooms",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-201-spear-st",
@@ -11155,7 +11205,8 @@
       "tags": [
         "garden",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-crocker-galleria",
@@ -11170,7 +11221,8 @@
         "food",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-301-howard-st",
@@ -11183,7 +11235,8 @@
       "tags": [
         "garden",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-444-market-st",
@@ -11199,7 +11252,8 @@
         "art",
         "open-always",
         "amenities"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-180-howard-st",
@@ -11213,7 +11267,8 @@
         "walkway",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-595-market-st",
@@ -11227,7 +11282,8 @@
         "plaza",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-221-main-st",
@@ -11240,7 +11296,8 @@
       "tags": [
         "plaza",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-redwood-park",
@@ -11254,7 +11311,8 @@
         "park",
         "art",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-50-california-st",
@@ -11269,7 +11327,8 @@
         "food",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-100-pine-st",
@@ -11283,7 +11342,8 @@
         "garden",
         "food",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-golden-gate-university",
@@ -11297,7 +11357,8 @@
         "snippet",
         "restrooms",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-1-california-st",
@@ -11311,7 +11372,8 @@
         "snippet",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-77-beale-st",
@@ -11324,7 +11386,8 @@
       "tags": [
         "plaza",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-555-california-st",
@@ -11337,7 +11400,8 @@
       "tags": [
         "garden",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-1-post-st",
@@ -11350,7 +11414,8 @@
       "tags": [
         "snippet",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-50-beale-st",
@@ -11363,7 +11428,8 @@
       "tags": [
         "plaza",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-555-557-market-st",
@@ -11377,7 +11443,8 @@
         "garden",
         "restrooms",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-650-california-st",
@@ -11392,7 +11459,8 @@
         "art",
         "restrooms",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-611-folsom-st",
@@ -11405,7 +11473,8 @@
       "tags": [
         "plaza",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-201-mission-st",
@@ -11418,7 +11487,8 @@
       "tags": [
         "garden",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-1-bush-street",
@@ -11432,7 +11502,8 @@
         "garden",
         "art",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-222-2nd-st",
@@ -11450,7 +11521,8 @@
         "restrooms",
         "business-hours",
         "amenities"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-350-mission-st",
@@ -11465,7 +11537,8 @@
         "greenhouse",
         "business-hours",
         "amenities"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-foundry-square-sw-indoor",
@@ -11482,7 +11555,8 @@
         "restrooms",
         "business-hours",
         "amenities"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-foundry-square-sw-outdoor",
@@ -11497,7 +11571,8 @@
         "food",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-101-california-st",
@@ -11511,7 +11586,8 @@
         "plaza",
         "food",
         "open-always"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-hampton-inn",
@@ -11525,7 +11601,8 @@
         "terrace",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-181-fremont",
@@ -11541,7 +11618,8 @@
         "food",
         "art",
         "restrooms"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-350-bush-st",
@@ -11558,7 +11636,8 @@
         "park",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-350-bush-st-2",
@@ -11575,7 +11654,8 @@
         "park",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     },
     {
       "id": "sf-pops-350-bush-st-3",
@@ -11592,7 +11672,8 @@
         "park",
         "restrooms",
         "business-hours"
-      ]
+      ],
+      "source": "https://sfplanning.org/popos"
     }
   ]
 }
