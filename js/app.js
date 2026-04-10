@@ -27,6 +27,7 @@ const state = {
 const map = L.map('map', {
   center: [37.5, -119.5],
   zoom: 6,
+  maxZoom: 17,
   zoomControl: false,
   attributionControl: true,
 });
