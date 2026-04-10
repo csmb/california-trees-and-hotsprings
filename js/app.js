@@ -45,6 +45,8 @@ L.tileLayer(
       '(<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
     subdomains: 'abc',
     maxZoom: 17,
+    updateWhenZooming: false,
+    keepBuffer: 3,
   }
 ).addTo(map);
 
