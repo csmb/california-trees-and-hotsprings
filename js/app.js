@@ -234,6 +234,7 @@ function selectLocation(id) {
   populatePanel(entry.location);
   openInfoPanel();
   panMapToMarker(entry.location);
+  history.replaceState(null, '', '#' + id);
 }
 
 function activateMarker(id) {
@@ -296,6 +297,7 @@ function closeInfoPanel() {
     deactivateMarker(state.activeLocationId);
     state.activeLocationId = null;
   }
+  history.replaceState(null, '', window.location.pathname + window.location.search);
 }
 
 function panMapToMarker(location) {
@@ -710,6 +712,12 @@ async function init() {
 
     addMarkers(state.locations);
     applyFilter('all'); // initial filter state
+
+    // Permalink: open location from URL hash on load
+    const hash = window.location.hash.slice(1);
+    if (hash && state.markers.has(hash)) {
+      selectLocation(hash);
+    }
   } catch (err) {
     console.error('Failed to initialise map:', err);
     // Show a user-facing error
