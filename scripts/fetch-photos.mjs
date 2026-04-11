@@ -47,7 +47,7 @@ async function getWikipediaImage(name) {
     const src = page.thumbnail.source;
     if (/\.(svg|gif)/i.test(src)) continue;
     // Skip tiny images (icons, logos)
-    if (page.thumbnail.width < 100 || page.thumbnail.height < 80) continue;
+    if (page.thumbnail.width < 100 || page.thumbnail.height < 100) continue;
     return {
       thumbUrl: src,
       filename: page.pageimage,
@@ -89,7 +89,7 @@ async function searchCommonsImage(query) {
     // Skip SVG and GIF
     if (/svg|gif/i.test(info.mime)) continue;
     // Skip tiny images
-    if (info.width < 100 || info.height < 80) continue;
+    if (info.width < 100 || info.height < 100) continue;
     // Prefer the thumbnail URL
     const thumbUrl = info.thumburl || info.url;
     const filename = page.title?.replace(/^File:/, '') || '';
@@ -143,7 +143,7 @@ function getSearchContext(loc) {
     case 'pops':
       return 'San Francisco';
     case 'tree':
-      return loc.location || 'California';
+      return 'tree ' + (loc.location || 'California');
     default:
       return 'California';
   }
@@ -172,9 +172,12 @@ async function main() {
 
     let result = null;
 
-    // Strategy 1: Wikipedia article image
-    result = await getWikipediaImage(loc.name);
-    await sleep(DELAY_MS);
+    // Trees: skip Wikipedia (generic names match wrong articles) — go straight to Commons
+    if (loc.type !== 'tree') {
+      // Strategy 1: Wikipedia article image
+      result = await getWikipediaImage(loc.name);
+      await sleep(DELAY_MS);
+    }
 
     // Strategy 2: Commons search fallback
     if (!result) {
