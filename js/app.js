@@ -265,6 +265,24 @@ function populatePanel(loc) {
   document.getElementById('panel-location').textContent = loc.location;
   document.getElementById('panel-description').textContent = loc.description;
 
+  // Hero image
+  const heroEl = document.getElementById('panel-hero');
+  const imgEl = document.getElementById('panel-image');
+  const attrEl = document.getElementById('panel-attribution');
+
+  if (loc.imageUrl) {
+    imgEl.classList.remove('is-loaded');
+    imgEl.alt = loc.name;
+    imgEl.onload = () => imgEl.classList.add('is-loaded');
+    imgEl.onerror = () => { heroEl.style.display = 'none'; };
+    imgEl.src = loc.imageUrl;
+    attrEl.textContent = loc.imageAttribution || '';
+    heroEl.style.display = '';
+  } else {
+    heroEl.style.display = 'none';
+    imgEl.src = '';
+  }
+
   // Tags
   const tagsEl = document.getElementById('panel-tags');
   tagsEl.innerHTML = '';
