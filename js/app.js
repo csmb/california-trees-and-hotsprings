@@ -62,12 +62,6 @@ map.on('click', () => {
 function refreshViewport() {
   const bounds = map.getBounds().pad(0.4);
   state.markers.forEach(entry => {
-    if (entry.cull === false) {
-      // Earthquake markers: skip viewport culling, only honor entry.shown
-      if (entry.shown && !map.hasLayer(entry.marker)) map.addLayer(entry.marker);
-      if (!entry.shown && map.hasLayer(entry.marker)) map.removeLayer(entry.marker);
-      return;
-    }
     const inBounds = bounds.contains([entry.location.lat, entry.location.lng]);
     if (entry.shown && inBounds) {
       if (!map.hasLayer(entry.marker)) map.addLayer(entry.marker);
@@ -137,6 +131,17 @@ function waterfallSvg(active) {
     </svg>`;
 }
 
+function quakeSvg(active) {
+  const fill = active ? '#7c2d12' : '#c1440e';
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="44" viewBox="0 0 36 44">
+      <!-- pin body -->
+      <path d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 26 18 26S36 31.5 36 18C36 8.06 27.94 0 18 0z"
+            fill="${fill}" stroke="white" stroke-width="1.5"/>
+      <text x="18" y="22" text-anchor="middle" dominant-baseline="middle" font-size="17">⚡</text>
+    </svg>`;
+}
+
 const iconCache = new Map();
 
 function createMarkerIcon(type, isActive) {
@@ -145,6 +150,7 @@ function createMarkerIcon(type, isActive) {
   const svg = type === 'tree' ? treeSvg(isActive)
     : type === 'waterfall' ? waterfallSvg(isActive)
     : type === 'pops' ? popsSvg(isActive)
+    : type === 'earthquake' ? quakeSvg(isActive)
     : hotspringSvg(isActive);
   const icon = L.divIcon({
     html: `<div class="map-marker${isActive ? ' marker-active' : ''}">${svg}</div>`,
@@ -163,12 +169,10 @@ function createMarkerIcon(type, isActive) {
 
 function addMarkers(locations) {
   locations.forEach(loc => {
-    const marker = loc.type === 'earthquake'
-      ? createEarthquakeMarker(loc)
-      : L.marker([loc.lat, loc.lng], {
-          icon: createMarkerIcon(loc.type, false),
-          title: loc.name,
-        });
+    const marker = L.marker([loc.lat, loc.lng], {
+      icon: createMarkerIcon(loc.type, false),
+      title: loc.name,
+    });
     marker.addTo(map);
 
     marker.on('click', (e) => {
@@ -176,12 +180,7 @@ function addMarkers(locations) {
       selectLocation(loc.id);
     });
 
-    state.markers.set(loc.id, {
-      marker,
-      location: loc,
-      shown: true,
-      cull: loc.type !== 'earthquake',
-    });
+    state.markers.set(loc.id, { marker, location: loc, shown: true });
   });
 }
 
@@ -255,10 +254,7 @@ function selectLocation(id) {
 function activateMarker(id) {
   const entry = state.markers.get(id);
   if (!entry) return;
-  const icon = entry.location.type === 'earthquake'
-    ? createEarthquakeIcon(entry.location.mag, true)
-    : createMarkerIcon(entry.location.type, true);
-  entry.marker.setIcon(icon);
+  entry.marker.setIcon(createMarkerIcon(entry.location.type, true));
   const el = entry.marker.getElement();
   if (el) el.style.zIndex = 9999;
 }
@@ -266,10 +262,7 @@ function activateMarker(id) {
 function deactivateMarker(id) {
   const entry = state.markers.get(id);
   if (!entry) return;
-  const icon = entry.location.type === 'earthquake'
-    ? createEarthquakeIcon(entry.location.mag, false)
-    : createMarkerIcon(entry.location.type, false);
-  entry.marker.setIcon(icon);
+  entry.marker.setIcon(createMarkerIcon(entry.location.type, false));
   const el = entry.marker.getElement();
   if (el) el.style.zIndex = '';
 }
@@ -821,21 +814,6 @@ function isInCalifornia(lat, lng) {
       && lng >= CA_BOUNDS.minLng && lng <= CA_BOUNDS.maxLng;
 }
 
-function quakeIconSize(mag) {
-  return Math.max(16, Math.min(56, 14 + (mag - 2.5) * 8));
-}
-
-function createEarthquakeIcon(mag, isActive) {
-  const size = quakeIconSize(mag);
-  return L.divIcon({
-    html: `<div class="map-marker quake-marker${isActive ? ' marker-active' : ''}" style="font-size:${size}px;">⚡</div>`,
-    className: '',
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    popupAnchor: [0, -size / 2],
-  });
-}
-
 function formatTimeAgo(epochMs) {
   const diff = Math.max(0, Date.now() - epochMs);
   const min = Math.floor(diff / 60000);
@@ -881,13 +859,6 @@ async function fetchEarthquakes() {
     console.warn('Failed to fetch USGS earthquakes:', err);
     return [];
   }
-}
-
-function createEarthquakeMarker(loc) {
-  return L.marker([loc.lat, loc.lng], {
-    icon: createEarthquakeIcon(loc.mag, false),
-    title: loc.name,
-  });
 }
 
 // ---------------------------------------------------------------------------
