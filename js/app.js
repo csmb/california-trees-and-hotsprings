@@ -279,9 +279,38 @@ function deactivateMarker(id) {
 }
 
 function populatePanel(loc) {
+  if (loc.type === 'earthquake') {
+    const badge = document.getElementById('type-badge');
+    badge.textContent = `M ${loc.mag.toFixed(1)}`;
+    badge.className = 'badge-quake';
+    badge.style.background = quakeColor(Date.now() - loc.time);
+    badge.style.color = '#fff';
+
+    document.getElementById('panel-name').textContent = loc.name;
+    document.getElementById('panel-location').textContent = loc.location;
+    document.getElementById('panel-description').textContent =
+      `Depth: ${loc.depth.toFixed(1)} km · ${formatTimeAgo(loc.time)}`;
+
+    // Hide hero image
+    document.getElementById('panel-hero').style.display = 'none';
+    document.getElementById('panel-image').src = '';
+
+    // Empty tags
+    document.getElementById('panel-tags').innerHTML = '';
+
+    // Source link → USGS event page
+    const sourceEl = document.getElementById('panel-source');
+    sourceEl.href = loc.source || '#';
+    sourceEl.className = '';
+    sourceEl.style.display = loc.source ? 'inline-block' : 'none';
+    return;
+  }
+
   const badge = document.getElementById('type-badge');
   badge.textContent = loc.type === 'tree' ? 'Tree' : loc.type === 'waterfall' ? 'Waterfall' : loc.type === 'pops' ? 'POPS' : 'Hot Spring';
   badge.className = loc.type === 'tree' ? 'badge-tree' : loc.type === 'waterfall' ? 'badge-waterfall' : loc.type === 'pops' ? 'badge-pops' : 'badge-hotspring';
+  badge.style.background = '';
+  badge.style.color = '';
 
   document.getElementById('panel-name').textContent = loc.name;
   document.getElementById('panel-location').textContent = loc.location;
