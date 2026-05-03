@@ -837,7 +837,7 @@ function quakeRadius(mag) {
 }
 
 function formatTimeAgo(epochMs) {
-  const diff = Date.now() - epochMs;
+  const diff = Math.max(0, Date.now() - epochMs);
   const min = Math.floor(diff / 60000);
   if (min < 1) return 'just now';
   if (min < 60) return `${min} minute${min === 1 ? '' : 's'} ago`;
@@ -855,6 +855,7 @@ async function fetchEarthquakes() {
     const features = data.features || [];
     return features
       .filter(f => {
+        if (!f.geometry || !Array.isArray(f.geometry.coordinates)) return false;
         const [lng, lat] = f.geometry.coordinates;
         return isInCalifornia(lat, lng) && typeof f.properties.mag === 'number';
       })
