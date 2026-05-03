@@ -255,6 +255,11 @@ function selectLocation(id) {
 function activateMarker(id) {
   const entry = state.markers.get(id);
   if (!entry) return;
+  if (entry.location.type === 'earthquake') {
+    entry.marker.setStyle({ weight: 3, color: '#111' });
+    entry.marker.bringToFront();
+    return;
+  }
   entry.marker.setIcon(createMarkerIcon(entry.location.type, true));
   // Bring to front
   const el = entry.marker.getElement();
@@ -264,6 +269,10 @@ function activateMarker(id) {
 function deactivateMarker(id) {
   const entry = state.markers.get(id);
   if (!entry) return;
+  if (entry.location.type === 'earthquake') {
+    entry.marker.setStyle({ weight: 1.5, color: '#fff' });
+    return;
+  }
   entry.marker.setIcon(createMarkerIcon(entry.location.type, false));
   const el = entry.marker.getElement();
   if (el) el.style.zIndex = '';
