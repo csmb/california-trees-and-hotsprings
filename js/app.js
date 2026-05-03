@@ -436,10 +436,20 @@ function renderDropdown(query) {
   searchResults.innerHTML = '';
   matches.forEach(loc => {
     const li = document.createElement('li');
-    li.className = loc.type === 'tree' ? 'result-tree' : loc.type === 'waterfall' ? 'result-waterfall' : loc.type === 'pops' ? 'result-pops' : 'result-hotspring';
+    li.className =
+      loc.type === 'tree' ? 'result-tree'
+      : loc.type === 'waterfall' ? 'result-waterfall'
+      : loc.type === 'pops' ? 'result-pops'
+      : loc.type === 'earthquake' ? 'result-quake'
+      : 'result-hotspring';
     li.setAttribute('role', 'option');
     li.setAttribute('tabindex', '-1');
-    const icon = loc.type === 'tree' ? '🌲' : loc.type === 'waterfall' ? '💧' : loc.type === 'pops' ? '🏛️' : '♨️';
+    const icon =
+      loc.type === 'tree' ? '🌲'
+      : loc.type === 'waterfall' ? '💧'
+      : loc.type === 'pops' ? '🏛️'
+      : loc.type === 'earthquake' ? '⚡'
+      : '♨️';
     li.innerHTML =
       `<div class="result-name"><span class="result-icon">${icon}</span>${escapeHtml(loc.name)}</div>` +
       `<div class="result-location">${escapeHtml(loc.location)}</div>`;
