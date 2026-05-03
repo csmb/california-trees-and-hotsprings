@@ -1,18 +1,20 @@
 # 24-Hour California Earthquakes on the Map
 
-**Status:** Approved design, ready for implementation plan
+**Status:** Shipped
 **Date:** 2026-05-03
+
+> **Note:** the original design specified scaled colored circles (radius by magnitude, fill color by recency). During implementation we iterated to a plain pin marker with a ⚡ emoji — same shape and size as waterfall/POPS pins — after seeing the circles in context. This document reflects the shipped design. The commit log preserves the iteration history.
 
 ## Goal
 
-Add a layer of recent (past 24h) California earthquakes to the existing California Trees & Hot Springs map, as scaled colored circles users can click for details.
+Add a layer of recent (past 24h) California earthquakes to the existing California Trees & Hot Springs map, rendered as ⚡ pin markers users can click for details.
 
 ## Decisions
 
 | Question | Decision |
 |---|---|
 | Geographic scope | California earthquakes only, M ≥ 2.5 |
-| Visual style | Scaled colored circles (USGS convention), color by recency |
+| Visual style | Pin marker matching existing types (36×44 SVG pin, ⚡ emoji inside, warm red-orange `#c1440e` fill). No magnitude scaling. No recency color encoding on the marker. |
 | Filter integration | New "Quakes" filter button, **on by default** |
 | Data refresh | Fetch once at page load |
 | Click behavior | Open existing info panel with quake-specific fields |
@@ -36,24 +38,18 @@ Padding past the strict CA borders (~32.5–42.0, −124.5 to −114.0) catches 
 
 ## Visual Design
 
-`L.circleMarker` (zoom-stable pixel radius, unlike `L.circle` which is in meters).
+Standard `L.marker` with a `divIcon` produced by the existing `createMarkerIcon` cache, parallel to waterfalls and POPS:
 
-**Radius (px):** `Math.max(4, Math.min(28, 4 + (mag - 2.5) * 4))`
-- M2.5 → 4px
-- M3.5 → 8px
-- M4.5 → 12px
-- M5.5 → 16px
-- M7+ → 28px (clamped)
+- **Pin shape:** the same 36×44 teardrop SVG used by every other type
+- **Pin fill:** `#c1440e` (warm red-orange — distinct from green trees, blue hot springs, blue waterfalls, amber POPS)
+- **Pin fill (active):** `#7c2d12` (darker variant)
+- **Stroke:** white, 1.5px (matches other types)
+- **Glyph:** ⚡ emoji rendered as SVG `<text>` at font-size 17 (same size as 💧 and 🏛️)
+- **Active state:** standard `marker-active` CSS class — `transform: scale(1.25)` + drop-shadow + bring-to-front. Same as every other type.
 
-**Fill color by event age** (`Date.now() - properties.time`):
-- < 1 hour → `#dc2626` (red)
-- 1 hour – 6 hours → `#ea580c` (orange)
-- 6 hours – 24 hours → `#eab308` (yellow)
+Magnitude does NOT affect marker size. Recency does NOT affect marker color. Both pieces of information are shown in the info panel description ("Depth: X km · N hours ago") instead.
 
-**Stroke:** white, weight 1.5, opacity 1
-**Fill opacity:** 0.7
-
-**Active state:** when an earthquake circle is selected (matches existing `activateMarker` flow), increase stroke weight to 3 and bring to front. No icon swap — radius/color stay the same.
+A new `quakeSvg(active)` helper is added to `js/app.js` alongside `treeSvg`/`hotspringSvg`/`popsSvg`/`waterfallSvg`. The earthquake type is added to the `createMarkerIcon` ternary chain. No earthquake-specific marker creation, activation, or culling code is needed.
 
 ## Integration With Existing Systems
 
@@ -82,12 +78,9 @@ This means:
 - **State:** earthquakes live in `state.locations` and `state.markers` alongside everything else.
 - **Filter:** `'earthquake'` is a new value in `state.activeFilters`. Existing `applyFilter` and `isLocationVisible` work unchanged.
 - **Search:** existing search matches `name`, `location`, `tags` — so users can search "Anza" or "M 4" naturally.
-- **Selection / panel:** `selectLocation(id)` works as-is; `populatePanel` branches on `loc.type === 'earthquake'`.
+- **Selection / panel:** `selectLocation(id)` works as-is; `populatePanel` branches on `loc.type === 'earthquake'` to render quake-specific fields.
 - **Permalink:** `#<USGS-event-id>` URLs work for free.
-
-**Marker creation differs:** earthquakes use `L.circleMarker`, not `L.marker` with a `divIcon`. A new helper `createEarthquakeMarker(loc)` returns the circle marker. `addMarkers` is split or branched so each location type uses the right factory.
-
-**Viewport culling:** disabled for earthquakes — the count is small (≤30) and the circles are cheap to render. The `state.markers` entry for a quake sets a flag (e.g. `cull: false`) that `refreshViewport` checks; earthquake markers are added once and stay until the filter hides them.
+- **Marker creation, activation, viewport culling:** all unchanged. Earthquakes go through the same `addMarkers` → `createMarkerIcon` → `activateMarker`/`deactivateMarker` → `refreshViewport` paths as every other type. The only earthquake-specific touch in `createMarkerIcon` is one extra arm on the type ternary that calls `quakeSvg(isActive)`.
 
 ## Filter Bar
 
@@ -105,7 +98,7 @@ No initial-state change needed — the new button is just another toggle.
 
 Extend `populatePanel(loc)` with an `if (loc.type === 'earthquake')` branch:
 
-- **Badge:** `M ${loc.mag.toFixed(1)}` in a chip whose background uses the same recency color as the circle. New CSS class `.badge-quake` with `background` set inline based on age (or a small helper that returns the color).
+- **Badge:** `M ${loc.mag.toFixed(1)}` in a chip with the warm red-orange `#c1440e` background and white text. Static color via the `.badge-quake` CSS rule (no inline styles, no recency encoding).
 - **Name (`#panel-name`):** `loc.name` (USGS title, e.g. "M 3.4 - 8 km E of Anza, CA").
 - **Location (`#panel-location`):** `loc.location` (USGS `place` field).
 - **Description (`#panel-description`):** generated string — `Depth: ${loc.depth.toFixed(1)} km · ${formatTimeAgo(loc.time)}`. New helper `formatTimeAgo(epochMs)` returns "12 minutes ago", "3 hours ago", "yesterday", etc.
@@ -131,60 +124,28 @@ const CA_BOUNDS = { minLat: 32.0, maxLat: 42.5, minLng: -125.0, maxLng: -113.5 }
 
 function isInCalifornia(lat, lng) { /* bbox check */ }
 
-function quakeColor(ageMs) { /* red/orange/yellow */ }
-function quakeRadius(mag) { /* clamped formula */ }
 function formatTimeAgo(epochMs) { /* relative time string */ }
 
 async function fetchEarthquakes() {
   // try/catch with 8s AbortSignal.timeout
-  // fetch, parse, filter to CA bbox, map to location-shaped objects
+  // fetch, filter to CA bbox + drop entries with null/missing geometry or mag
+  // map to location-shaped objects (with mag/depth/time as extra fields)
   // returns [] on any error (silent failure, like fetchGoogleDocLocations)
 }
-
-function createEarthquakeMarker(loc) {
-  return L.circleMarker([loc.lat, loc.lng], {
-    radius: quakeRadius(loc.mag),
-    fillColor: quakeColor(Date.now() - loc.time),
-    color: '#fff',
-    weight: 1.5,
-    fillOpacity: 0.7,
-  });
-}
 ```
 
-`addMarkers` becomes type-aware:
+A new `quakeSvg(active)` helper is added alongside the existing `treeSvg`/`hotspringSvg`/`popsSvg`/`waterfallSvg`. It returns the standard 36×44 pin SVG with `fill: #c1440e` (or `#7c2d12` when active) and a `<text font-size="17">⚡</text>` glyph at the center.
+
+`createMarkerIcon` gains one arm in its type ternary:
 ```js
-function addMarkers(locations) {
-  locations.forEach(loc => {
-    const marker = loc.type === 'earthquake'
-      ? createEarthquakeMarker(loc)
-      : L.marker([loc.lat, loc.lng], { icon: createMarkerIcon(loc.type, false), title: loc.name });
-    marker.addTo(map);
-    marker.on('click', e => { L.DomEvent.stopPropagation(e); selectLocation(loc.id); });
-    state.markers.set(loc.id, { marker, location: loc, shown: true, cull: loc.type !== 'earthquake' });
-  });
-}
+const svg = type === 'tree' ? treeSvg(isActive)
+  : type === 'waterfall' ? waterfallSvg(isActive)
+  : type === 'pops' ? popsSvg(isActive)
+  : type === 'earthquake' ? quakeSvg(isActive)
+  : hotspringSvg(isActive);
 ```
 
-`refreshViewport` honors `cull: false`:
-```js
-function refreshViewport() {
-  const bounds = map.getBounds().pad(0.4);
-  state.markers.forEach(entry => {
-    if (entry.cull === false) {
-      // earthquake — toggle solely by entry.shown
-      if (entry.shown && !map.hasLayer(entry.marker)) map.addLayer(entry.marker);
-      if (!entry.shown && map.hasLayer(entry.marker)) map.removeLayer(entry.marker);
-      return;
-    }
-    const inBounds = bounds.contains([entry.location.lat, entry.location.lng]);
-    /* existing logic */
-  });
-}
-```
-
-`activateMarker` / `deactivateMarker` need a small branch:
-- For earthquakes, change `marker.options.weight` and call `setStyle({ weight: 3 })` / `setStyle({ weight: 1.5 })` instead of `setIcon`.
+`addMarkers`, `activateMarker`, `deactivateMarker`, and `refreshViewport` are unchanged from before this feature — earthquakes flow through them like any other type.
 
 `init()` fetches earthquakes in parallel with the other two sources:
 ```js
@@ -201,9 +162,10 @@ Earthquakes are appended to `state.locations` after the merge so they don't acci
 
 In `css/style.css`:
 
-- `.badge-quake` — base chip style; background set inline at render time
-- `.result-quake` — search dropdown row accent (subtle warm tint or border)
-- No new marker classes needed — `circleMarker` is styled via Leaflet path options
+- `.filter-btn[data-filter="earthquake"].is-active { background: #c1440e; }`
+- `#type-badge.badge-quake { background: #c1440e; color: #fff; }`
+- `#search-results li.result-quake` — left border + faint background tint at `#c1440e`, hover state at `0.1` opacity
+- No new marker classes needed — earthquakes use the same `.map-marker` / `.marker-active` rules as every other pin type
 
 ## Error Handling
 
