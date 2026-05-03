@@ -294,6 +294,7 @@ function populatePanel(loc) {
     // Hide hero image
     document.getElementById('panel-hero').style.display = 'none';
     document.getElementById('panel-image').src = '';
+    document.getElementById('panel-attribution').textContent = '';
 
     // Empty tags
     document.getElementById('panel-tags').innerHTML = '';
