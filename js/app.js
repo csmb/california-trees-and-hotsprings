@@ -750,6 +750,77 @@ async function fetchGoogleDocLocations() {
 }
 
 // ---------------------------------------------------------------------------
+// Earthquakes (USGS GeoJSON feed, past 24h, California only)
+// ---------------------------------------------------------------------------
+
+const EARTHQUAKE_FEED_URL =
+  'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson';
+
+const CA_BOUNDS = { minLat: 32.0, maxLat: 42.5, minLng: -125.0, maxLng: -113.5 };
+
+function isInCalifornia(lat, lng) {
+  return lat >= CA_BOUNDS.minLat && lat <= CA_BOUNDS.maxLat
+      && lng >= CA_BOUNDS.minLng && lng <= CA_BOUNDS.maxLng;
+}
+
+function quakeColor(ageMs) {
+  const hour = 60 * 60 * 1000;
+  if (ageMs < hour) return '#dc2626';        // < 1h: red
+  if (ageMs < 6 * hour) return '#ea580c';    // 1-6h: orange
+  return '#eab308';                           // 6-24h: yellow
+}
+
+function quakeRadius(mag) {
+  return Math.max(4, Math.min(28, 4 + (mag - 2.5) * 4));
+}
+
+function formatTimeAgo(epochMs) {
+  const diff = Date.now() - epochMs;
+  const min = Math.floor(diff / 60000);
+  if (min < 1) return 'just now';
+  if (min < 60) return `${min} minute${min === 1 ? '' : 's'} ago`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `${hr} hour${hr === 1 ? '' : 's'} ago`;
+  const day = Math.floor(hr / 24);
+  return `${day} day${day === 1 ? '' : 's'} ago`;
+}
+
+async function fetchEarthquakes() {
+  try {
+    const res = await fetch(EARTHQUAKE_FEED_URL, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) return [];
+    const data = await res.json();
+    const features = data.features || [];
+    return features
+      .filter(f => {
+        const [lng, lat] = f.geometry.coordinates;
+        return isInCalifornia(lat, lng);
+      })
+      .map(f => {
+        const [lng, lat, depth] = f.geometry.coordinates;
+        const p = f.properties;
+        return {
+          id: f.id,
+          type: 'earthquake',
+          name: p.title,
+          lat,
+          lng,
+          description: '',
+          location: p.place || '',
+          source: p.url,
+          tags: [],
+          mag: p.mag,
+          depth,
+          time: p.time,
+        };
+      });
+  } catch (err) {
+    console.warn('Failed to fetch USGS earthquakes:', err);
+    return [];
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
 
