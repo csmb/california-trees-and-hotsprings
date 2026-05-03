@@ -62,6 +62,12 @@ map.on('click', () => {
 function refreshViewport() {
   const bounds = map.getBounds().pad(0.4);
   state.markers.forEach(entry => {
+    if (entry.cull === false) {
+      // Earthquake markers: skip viewport culling, only honor entry.shown
+      if (entry.shown && !map.hasLayer(entry.marker)) map.addLayer(entry.marker);
+      if (!entry.shown && map.hasLayer(entry.marker)) map.removeLayer(entry.marker);
+      return;
+    }
     const inBounds = bounds.contains([entry.location.lat, entry.location.lng]);
     if (entry.shown && inBounds) {
       if (!map.hasLayer(entry.marker)) map.addLayer(entry.marker);
@@ -157,10 +163,12 @@ function createMarkerIcon(type, isActive) {
 
 function addMarkers(locations) {
   locations.forEach(loc => {
-    const marker = L.marker([loc.lat, loc.lng], {
-      icon: createMarkerIcon(loc.type, false),
-      title: loc.name,
-    });
+    const marker = loc.type === 'earthquake'
+      ? createEarthquakeMarker(loc)
+      : L.marker([loc.lat, loc.lng], {
+          icon: createMarkerIcon(loc.type, false),
+          title: loc.name,
+        });
     marker.addTo(map);
 
     marker.on('click', (e) => {
@@ -168,7 +176,12 @@ function addMarkers(locations) {
       selectLocation(loc.id);
     });
 
-    state.markers.set(loc.id, { marker, location: loc, shown: true });
+    state.markers.set(loc.id, {
+      marker,
+      location: loc,
+      shown: true,
+      cull: loc.type !== 'earthquake',
+    });
   });
 }
 
@@ -794,7 +807,7 @@ async function fetchEarthquakes() {
     return features
       .filter(f => {
         const [lng, lat] = f.geometry.coordinates;
-        return isInCalifornia(lat, lng);
+        return isInCalifornia(lat, lng) && typeof f.properties.mag === 'number';
       })
       .map(f => {
         const [lng, lat, depth] = f.geometry.coordinates;
@@ -820,20 +833,34 @@ async function fetchEarthquakes() {
   }
 }
 
+function createEarthquakeMarker(loc) {
+  return L.circleMarker([loc.lat, loc.lng], {
+    radius: quakeRadius(loc.mag),
+    fillColor: quakeColor(Date.now() - loc.time),
+    color: '#fff',
+    weight: 1.5,
+    fillOpacity: 0.7,
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
 
 async function init() {
   try {
-    const [baseLocations, docLocations] = await Promise.all([
+    const [baseLocations, docLocations, earthquakes] = await Promise.all([
       loadLocations(),
       fetchGoogleDocLocations(),
+      fetchEarthquakes(),
     ]);
 
     // Merge: doc entries override base entries with same id; new ids are appended
     const baseMap = new Map(baseLocations.map(l => [l.id, l]));
     docLocations.forEach(loc => baseMap.set(loc.id, loc));
+    // Earthquakes append after the merge — USGS ids (e.g. "ci40123456") won't collide
+    // with curated location ids, but using set() keeps behavior sane if they ever do.
+    earthquakes.forEach(loc => baseMap.set(loc.id, loc));
     state.locations = Array.from(baseMap.values());
 
     addMarkers(state.locations);
