@@ -255,13 +255,10 @@ function selectLocation(id) {
 function activateMarker(id) {
   const entry = state.markers.get(id);
   if (!entry) return;
-  if (entry.location.type === 'earthquake') {
-    entry.marker.setStyle({ weight: 3, color: '#111' });
-    entry.marker.bringToFront();
-    return;
-  }
-  entry.marker.setIcon(createMarkerIcon(entry.location.type, true));
-  // Bring to front
+  const icon = entry.location.type === 'earthquake'
+    ? createEarthquakeIcon(entry.location.mag, true)
+    : createMarkerIcon(entry.location.type, true);
+  entry.marker.setIcon(icon);
   const el = entry.marker.getElement();
   if (el) el.style.zIndex = 9999;
 }
@@ -269,11 +266,10 @@ function activateMarker(id) {
 function deactivateMarker(id) {
   const entry = state.markers.get(id);
   if (!entry) return;
-  if (entry.location.type === 'earthquake') {
-    entry.marker.setStyle({ weight: 1.5, color: '#fff' });
-    return;
-  }
-  entry.marker.setIcon(createMarkerIcon(entry.location.type, false));
+  const icon = entry.location.type === 'earthquake'
+    ? createEarthquakeIcon(entry.location.mag, false)
+    : createMarkerIcon(entry.location.type, false);
+  entry.marker.setIcon(icon);
   const el = entry.marker.getElement();
   if (el) el.style.zIndex = '';
 }
@@ -283,8 +279,8 @@ function populatePanel(loc) {
     const badge = document.getElementById('type-badge');
     badge.textContent = `M ${loc.mag.toFixed(1)}`;
     badge.className = 'badge-quake';
-    badge.style.background = quakeColor(Date.now() - loc.time);
-    badge.style.color = '#fff';
+    badge.style.background = '';
+    badge.style.color = '';
 
     document.getElementById('panel-name').textContent = loc.name;
     document.getElementById('panel-location').textContent = loc.location;
@@ -825,15 +821,19 @@ function isInCalifornia(lat, lng) {
       && lng >= CA_BOUNDS.minLng && lng <= CA_BOUNDS.maxLng;
 }
 
-function quakeColor(ageMs) {
-  const hour = 60 * 60 * 1000;
-  if (ageMs < hour) return '#dc2626';        // < 1h: red
-  if (ageMs < 6 * hour) return '#ea580c';    // 1-6h: orange
-  return '#eab308';                           // 6-24h: yellow
+function quakeIconSize(mag) {
+  return Math.max(16, Math.min(56, 14 + (mag - 2.5) * 8));
 }
 
-function quakeRadius(mag) {
-  return Math.max(4, Math.min(28, 4 + (mag - 2.5) * 4));
+function createEarthquakeIcon(mag, isActive) {
+  const size = quakeIconSize(mag);
+  return L.divIcon({
+    html: `<div class="map-marker quake-marker${isActive ? ' marker-active' : ''}" style="font-size:${size}px;">⚡</div>`,
+    className: '',
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -size / 2],
+  });
 }
 
 function formatTimeAgo(epochMs) {
@@ -884,12 +884,9 @@ async function fetchEarthquakes() {
 }
 
 function createEarthquakeMarker(loc) {
-  return L.circleMarker([loc.lat, loc.lng], {
-    radius: quakeRadius(loc.mag),
-    fillColor: quakeColor(Date.now() - loc.time),
-    color: '#fff',
-    weight: 1.5,
-    fillOpacity: 0.7,
+  return L.marker([loc.lat, loc.lng], {
+    icon: createEarthquakeIcon(loc.mag, false),
+    title: loc.name,
   });
 }
 

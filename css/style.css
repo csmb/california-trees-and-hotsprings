@@ -316,7 +316,8 @@ html, body {
 }
 
 #type-badge.badge-quake {
-  /* background and color set inline based on event recency */
+  background: #c1440e;
+  color: #fff;
 }
 
 #panel-name {
@@ -419,6 +420,12 @@ html, body {
   transform: scale(1.25);
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.45));
   z-index: 9999 !important;
+}
+
+.quake-marker {
+  line-height: 1;
+  text-align: center;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
 }
 
 
