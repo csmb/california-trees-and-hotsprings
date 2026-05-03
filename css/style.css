@@ -89,6 +89,10 @@ html, body {
   background: #a16207;
 }
 
+.filter-btn[data-filter="earthquake"].is-active {
+  background: #c1440e;
+}
+
 .filter-icon {
   font-size: 13px;
 }
@@ -309,6 +313,10 @@ html, body {
 #type-badge.badge-pops {
   background: #fef3c7;
   color: #713f12;
+}
+
+#type-badge.badge-quake {
+  /* background and color set inline based on event recency */
 }
 
 #panel-name {
@@ -635,6 +643,16 @@ html, body {
 #search-results li.result-pops:hover,
 #search-results li.result-pops.is-focused {
   background: rgba(161, 98, 7, 0.1);
+}
+
+#search-results li.result-quake {
+  border-left-color: #c1440e;
+  background: rgba(193, 68, 14, 0.04);
+}
+
+#search-results li.result-quake:hover,
+#search-results li.result-quake.is-focused {
+  background: rgba(193, 68, 14, 0.1);
 }
 
 .result-name {
